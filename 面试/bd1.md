@@ -22,7 +22,7 @@ class Singleton{
     }
     
     //静态工厂方法，返回此类的唯一实例
-    public static function getInstance(){
+    public static function s(){
         if(is_null(self::$instance)){
             self::$_instance=new Singleton();
         }

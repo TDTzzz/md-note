@@ -312,3 +312,85 @@ function help($left,$right){
 
 > 注意上面的JS代码有个地方有点怪异，res我用的是数组，因为js里的函数传参是值传递，如果用res=0传的话，res始终是0，而用数组的话，因为数组作函数参数，传的是内存地址，所以可以在函数内部修改。故用了数组。但其实应该不需要res这个参数，直接给个全局变量res即可，但不知道为何在leetcode里没通过？？
 
+
+
+
+
+### 9.二叉搜索树转换成排序的双向链表
+
+> 非递归版本(思路有点类似中序遍历)
+
+```php
+class TreeNode{
+    var $val;
+    var $left = NULL;
+    var $right = NULL;
+    function __construct($val){
+        $this->val = $val;
+    }
+}
+
+function convert($root){
+    if(empty($root)) return null;
+    $stack=[];
+    $p=$root;
+    $pre=null;
+    $isFirst=true;
+    
+    //这里的stack用的很巧妙
+    while($p!=null||!empty($stack)){
+        while($p!=null){
+            $stack[]=$p;
+            $p=$p->left;
+        }
+       	$p=array_pop($stack);
+        
+        if($isFirst){
+            //得到第一个结点(最小点，也就是双向链表的起始点，用root记录下来，方便最后return)
+            $root=$p;
+            $pre=$p;
+            $isFirst=false;
+        }else{
+            $p->left=$pre;
+            $pre->right=$p;
+            $pre=$p;
+        }
+        $p=$p->right;
+    }
+          
+    return $root;
+}
+```
+
+
+
+> 递归版本
+
+```php
+
+function convert($root){
+	if(empty($root)) return null;
+	if(empty($root->left)&&empty($root->right)) return $root;
+    
+    $left=convert($root->left);
+    $p=$left;
+    
+    while($p!=null&&$p->right!=null){
+        $p=$p->right;
+    }
+    if($p!=null){
+        $p->right=$root;
+        $root->left=$p;
+    }
+    
+    $right=convert($root->right);
+    if($right!=null){
+        $right->left=$root;
+        $root->right=$right;
+    }
+    
+    return $left!=null?$left:$root;
+}
+
+```
+
