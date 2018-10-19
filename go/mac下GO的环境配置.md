@@ -15,3 +15,7 @@
 
 
 [不错的教程](https://www.jianshu.com/p/40e08c85f9e3)
+
+
+
+> 每次这种配环境变量的，总会遇到点问题，需要把linux(macos)下的加载bash shell机制弄明白
