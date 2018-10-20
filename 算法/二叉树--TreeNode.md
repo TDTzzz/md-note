@@ -394,3 +394,38 @@ function convert($root){
 
 ```
 
+
+
+### 10.二叉树镜像
+
+> 判断两个二叉树是否是镜像关系
+
+```php
+function isMirror($root1, $root2)
+{
+    if (empty($root1) && empty($root2)) return true;
+    if (empty($root1) || empty($root2)) return false;
+    if ($root1->val != $root2->val) return false;
+
+    return isMirror($root1->left, $root2->right) && isMirror($root1->right, $root2->left);
+}
+```
+
+
+
+> 将输入的二叉树转换成它的镜像二叉树
+
+```php
+function Mirror(&$root)
+{
+    //交换左右节点
+    if(empty($root)) return;
+    $tmp = $root->left;
+    $root->left = $root->right;
+    $root->right = $tmp;
+    Mirror($root->left);
+    Mirror($root->right);
+    return $root;
+}
+```
+
