@@ -473,3 +473,107 @@ function GetNext($pNode)
 
 ```
 
+
+
+
+
+### 12.按层打印二叉树
+
+> 这种事按层打印的，比如
+>
+> [
+>
+> ​	[1],
+>
+> ​	[2,3],
+>
+> ​	[4,5]
+>
+> ]
+>
+> 比[1,2,3,4,5]这种要稍微难一点
+
+```php
+function MyPrint($pRoot)
+{
+    // write code here
+    if(!$pRoot) return [];
+    $res=[];
+    $stack=[];
+    $stack[]=$pRoot;
+
+    while(count($stack)>0){
+        $tmp=[];
+        $count=count($stack);
+
+        while($count-->0){
+            $cur=array_shift($stack);
+            $tmp[]=$cur->val;
+
+            if($cur->left){
+                $stack[]=$cur->left;
+            }
+            if($cur->right){
+                $stack[]=$cur->right;
+            }
+
+        }
+        $res[]=$tmp;
+    }
+    return $res;
+}
+```
+
+
+
+### 13.按Z字型打印二叉树
+
+> 思想和上面的按层打印差不多，这里有个技巧就是建立两个 栈，分别存储两种顺序的节点。
+
+
+
+```php
+
+function MyPrint($pRoot)
+{
+    if (!$pRoot) return [];
+
+    $layer=1;//记录层数
+    //用两个栈分别存
+    $s1=[];
+    $s1[]=$pRoot;
+    $s2=[];
+    $res=[];
+
+    while(count($s1)>0||count($s2)>0){
+        //判断是左到右 还是 右到左
+        if ($layer%2==1){
+            //左到右
+            $tmp=[];
+
+            while(count($s1)>0){
+                $node=array_shift($s1);
+
+                $tmp[]=$node->val;
+                if($node->left) $s2[]=$node->left;
+                if($node->right) $s2[]=$node->right;
+            }
+            $res[]=$tmp;
+
+        }else{
+            $tmp=[];
+            while(count($s2)>0) {
+                $node = array_shift($s2);
+                $tmp[] = $node->val;
+                if ($node->left) $s1[] = $node->left;
+                if ($node->right) $s1[] = $node->right;
+            }
+            $res[]=array_reverse($tmp);
+        }
+      
+        $layer++;
+    }
+    return $res;
+}
+```
+

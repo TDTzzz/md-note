@@ -184,3 +184,57 @@ function partition($head,$x)
 }
 ```
 
+
+
+
+
+### 5.删除链表中的重复节点
+
+> 递归法
+
+```php
+function deleteDuplication($pHead){
+    if(!$pHead) return null;
+    if($pHead&&!$pHead->next) return $pHead;
+    
+    if($pHead->val==$pHead->next->val){
+        $cur=$pHead->next->next;
+        while($cur!=null&&$cur->val==$pHead->val){
+            $cur=$cur->next;
+        }
+        return deleteDuplication($cur);
+    }else{
+        $cur=$pHead->next;
+        $pHead->next=deleteDuplication($cur);
+        return $pHead;
+    }
+}
+```
+
+
+
+> 非递归法
+
+```php
+function deleteDuplication($pHead){
+    $new=new ListNode(0);
+    $new->next=$pHead;
+    $res=$new;
+    
+    while($new->next){
+        $flag=false;//判断是否重复
+        $tmp=$new->next;
+        while($tmp->val==$tmp->next->val){
+            $flag=true;
+            $tmp=$tmp->next;
+        }
+        if($flag){
+            $new->next=$tmp->next;
+        }else{
+            $new=$new->next;
+        }
+    }
+    return $res->next;
+}
+```
+
