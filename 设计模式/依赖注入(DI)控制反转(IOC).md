@@ -96,3 +96,49 @@ $container->bind(Meal::class, function (Container $container) {
 echo get_class($container->make(Meal::class));
 ```
 
+
+
+> 上面的思路其实还是比较麻烦，因为还是要将所需要的依赖 bind 进去。思考一下，可以自动将所需的依赖生成，无需手动bind吗。。。
+>
+> 利用 反射--Refection 即可实现
+
+```php
+public function make(string $class,$params){
+    if(isset($this->binds[$class])){
+        return ($this->binds[$class])->call($this,$this,...$params)
+    }
+    //注意：这里和之前不一样
+    return $this->resolve($class);
+}
+
+public function resolve(string $class){
+    //先获得构造函数
+    $constructor=(new ReflectionClass($class))->getConstructor();
+    //构造函数未定义的话就直接返回
+    if(is_null($constructor)){
+        return new $class;
+    }
+    //获得构造函数的参数
+    $parameters=$constructor->getParameters();
+    $arguments=[];
+    
+    foreach($parameters as $parameter){
+        //获得参数的类型提示类
+        $paramClassName=$parameter->getClass()->name;
+        //参数没有类型提示类，则报错
+        if(is_null($paramClassName)){
+            throw new Exception("Fail to get instance by reflection");
+        }
+        //实例化参数
+        $arguments[]=$this->make($paramClassName);
+    }
+    
+    return new $class(...$arguments);
+}
+
+```
+
+
+
+> 然后就可以这样 创建 多依赖的类了 **$container->make(Meal::class);**
+
